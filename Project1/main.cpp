@@ -1,7 +1,7 @@
-#include <iostream>
-using namespace std;
+#include "def.h"
+
 int main()
 {
-	cout << "hello";
+    return 0;
 
 }
