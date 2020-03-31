@@ -1,5 +1,8 @@
 #include <iostream>
 #include <vector>
+#include <ros/ros.h>
+#include <ros/package.h>
+#include "std_msgs/String.h"
 using namespace std;
 
 struct position {
