@@ -11,7 +11,7 @@ struct Subscriber
 	ros::Subscriber att;
 }sub;
 
-void posInit(const std_msgs::String::ConstPtr& msg)
+void posInit(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
 	plane.pos.x = msg->pose.position.x;
 	plane.pos.y = msg->pose.position.y;
@@ -20,23 +20,23 @@ void posInit(const std_msgs::String::ConstPtr& msg)
 
 
 
-void v_localInit(const std_msgs::String::ConstPtr& msg)
+void v_localInit(const geometry_msgs::TwistStamped::ConstPtr& msg)
 {
 	plane.v.x_sp = msg->twist.linear.x;
 	plane.v.y_sp = msg->twist.linear.y;
 	plane.v.z_sp = msg->twist.linear.z;
 }
 
-void v_bodyInit(const std_msgs::String::ConstPtr& msg)
+void v_bodyInit(const geometry_msgs::TwistStamped::ConstPtr& msg)
 {
-	//因为不知道它发的是什么东西，可能是机体速度，先打出来看看。也不知道它的data是什么东西
+	//因为不知道它发的是什么东西，可能是机体速度（対地速度，而v_local的值相对它更小，先打出来看看。也不知道它的data是什么东西
 	ROS_INFO("node_b is receiving [%s]", msg->data.c_str());
 }
 
 void att_cb(const sensor_msgs::Imu::ConstPtr& msg)
 {
-	 plane.attitude_qv = Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
-	 //保存四元数，未处理,不知道这个赋值函数能不能用
+	Eigen::Quaterniond plane.attitude_qv = Eigen::Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
+	 //保存四元数，未处理,不知道这个赋值函数能不能用，如果不能用直接一个个赋值
 
 	plane.ang_r.roll_r = msg->angular_velocity.x;
 	plane.ang_r.pitch_r = msg->angular_velocity.x;
