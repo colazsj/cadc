@@ -10,7 +10,7 @@
 using namespace Eigen;
 using namespace std;
 
-//³¤¶Èµ¥Î»m£¬½Ç¶Èµ¥Î»rad
+//é•¿åº¦å•ä½mï¼Œè§’åº¦å•ä½rad
 
 struct position {
 	double x, y, z;
@@ -30,9 +30,9 @@ struct plane {
 	position pos;
 	velocity v;
 	ang_rate ang_r;
-	double air_speed; //²»ÖªµÀ¿ÕËÙ·¢²¼µÄ»°ÌâÊÇÊ²Ã´£¬¿´¶Å½¨ÄÏµÄ·ÂÕæÄÜ²»ÄÜÓÃ
-	double v_body;//²»ÖªµÀÄÜ²»ÄÜÖ±½ÓÊÕµ½»úÌåËÙ¶È
-	geometry_msgs / Eigen::Quaterniond attitude_qv;  //ËÄÔªÊı
+	double air_speed; //ä¸çŸ¥é“ç©ºé€Ÿå‘å¸ƒçš„è¯é¢˜æ˜¯ä»€ä¹ˆ
+	double v_body;//ä¸çŸ¥é“èƒ½ä¸èƒ½ç›´æ¥æ”¶åˆ°æœºä½“é€Ÿåº¦,æœºèº«åæ ‡ç³»ä¸‹çš„è¯é¢˜å¾—åˆ°çš„xæ˜¯é£æœºå‘å‰çš„é€Ÿåº¦ï¼Œä½†è€ƒè™‘åˆ°ä¼šæœ‰åç§»ï¼Œå¯èƒ½ä¸å¤ªå‡†ï¼Œå…ˆç”¨ä¸‰ç»´é€Ÿåº¦ï¼Œå¦‚æœåé¢å‘ç°é¢å¯¹æ ‡é¶æ—¶æœºèº«åæ ‡ç³»æ›´æ–¹ä¾¿å†æ”¹
+	geometry_msgs / Eigen::Quaterniond attitude_qv;  //å››å…ƒæ•°
 	bool Drop(float x,float y,float z);
 }plane;
 
@@ -42,7 +42,7 @@ bool plane::Drop(float x,float y, float z)
 	const float delay_t = 0.5;
 	float tx = x - pos.x-v.x_sp*delay_t;
 	float ty = y - pos.y-v.y_sp*delay_t;
-	float tz = z - pos.z-v.z_sp*delay_t;//×ø±ê±ä»»£¬µÃµ½°Ğ±êÏà¶Ô·É»úµÄÎ»Ê¸¡£
+	float tz = z - pos.z-v.z_sp*delay_t;//åæ ‡å˜æ¢ï¼Œå¾—åˆ°é¶æ ‡ç›¸å¯¹é£æœºçš„ä½çŸ¢ã€‚
 
 	pos.z += v.z_sp * delay_t;
 	 
@@ -56,6 +56,6 @@ bool plane::Drop(float x,float y, float z)
 		return true;
 	return 0;
 //	else
-		//return Drop(x, y, z);²»ÖªµÀÊÇÍ¨¹ı»Øµ÷º¯Êı½â¾ö»¹ÊÇÔÙ½ÓÊÕĞÅÏ¢ÔÙÍâ²¿µ÷ÓÃº¯Êı¡£
+		//return Drop(x, y, z);ä¸çŸ¥é“æ˜¯é€šè¿‡å›è°ƒå‡½æ•°è§£å†³è¿˜æ˜¯å†æ¥æ”¶ä¿¡æ¯å†å¤–éƒ¨è°ƒç”¨å‡½æ•°ã€‚
 		
 }
