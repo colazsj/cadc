@@ -1,12 +1,33 @@
-#include <iostream>
+#ifndef _DEF_
+#define _DEF_
+#include <math.h>
+#include <string>
 #include <vector>
+#include <iostream>
+#include <pthread.h>
+#include <thread>
+#include <chrono>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/shared_mutex.hpp>
 #include <ros/ros.h>
 #include <ros/package.h>
-#include "std_msgs/String.h"
-#include <geometry_msgs/PoseStamped.h>
+#include <yaml-cpp/yaml.h>
+#include <image_transport/image_transport.h>  
+#include <cv_bridge/cv_bridge.h>  
+#include <sensor_msgs/image_encodings.h>
+#include <prometheus_msgs/DetectionInfo.h>
+#include <geometry_msgs/Pose.h>
 #include <geometry_msgs/TwistStamped.h>
-#include "Eigen/Eigen"
+#include <opencv2/imgproc/imgproc.hpp>  
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/ml.hpp>
+#include "std_msgs/String.h"
+#include "kcftracker.hpp"
+#include <sstream>
 #include <cmath>
+#include <sensor_msgs/Imu.h>
+#include <eigen3/Eigen/Eigen>
+
 using namespace Eigen;
 using namespace std;
 
@@ -30,32 +51,12 @@ struct plane {
 	position pos;
 	velocity v;
 	ang_rate ang_r;
-	double air_speed; //不知道空速发布的话题是什么，看杜建南的仿真能不能用
-	double v_body;//不知道能不能直接收到机体速度
-	geometry_msgs / Eigen::Quaterniond attitude_qv;  //四元数
+	double air_speed; //不知道空速发布的话题是什么
+	double v_body;//机身坐标系下的话题得到的x是飞机向前的速度，但考虑到会有偏移，可能不太准，先用三维速度，如果后面发现面对标靶时机身坐标系更方便再改
+	Eigen::Quaterniond attitude_qv;  //四元数
+	double attitude[3];
 	bool Drop(float x,float y,float z);
 }plane;
 
-bool plane::Drop(float x,float y, float z)
-{
-	#define g=9.8;
-	const float delay_t = 0.5;
-	float tx = x - pos.x-v.x_sp*delay_t;
-	float ty = y - pos.y-v.y_sp*delay_t;
-	float tz = z - pos.z-v.z_sp*delay_t;//坐标变换，得到靶标相对飞机的位矢。
 
-	pos.z += v.z_sp * delay_t;
-	 
-	float h_t = sqrt(2 * pos.z / g);
-	float s_x = v.x_sp * h_t;
-	float s_y = v.y_sp * h_t;
-
-	float d_val=sqrt((tx-s_x)^2+(ty-s_y)^2);
-
-	if (d_val<=3)
-		return true;
-	return 0;
-//	else
-		//return Drop(x, y, z);不知道是通过回调函数解决还是再接收信息再外部调用函数。
-		
-}
+#endif

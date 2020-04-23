@@ -2,12 +2,10 @@
 
 struct Subscriber
 {
-	ros::Subscriber pose_cov;
 	ros::Subscriber pose;
-	ros::Subscriber odom;
 	ros::Subscriber v_local;
 	ros::Subscriber v_body;
-	ros::Subscriber v_body_cov;
+	ros::Subscriber airspeed;
 	ros::Subscriber att;
 }sub;
 
@@ -25,35 +23,44 @@ void v_localInit(const geometry_msgs::TwistStamped::ConstPtr& msg)
 	plane.v.x_sp = msg->twist.linear.x;
 	plane.v.y_sp = msg->twist.linear.y;
 	plane.v.z_sp = msg->twist.linear.z;
-}
+}//这里接收到了角速度好像不太行，线速度还是能用的
 
 void v_bodyInit(const geometry_msgs::TwistStamped::ConstPtr& msg)
 {
-	//因为不知道它发的是什么东西，可能是机体速度（対地速度，而v_local的值相对它更小，先打出来看看。也不知道它的data是什么东西
-	ROS_INFO("node_b is receiving [%s]", msg->data.c_str());
+	//  接收机体坐标系下机身向前的速度。
+	plane.v_body = msg->twist.linear.x;
+}
+
+Eigen::Vector3d quaternion_to_euler(const Eigen::Quaterniond& q)
+{
+	float quat[4];
+	quat[0] = q.w();
+	quat[1] = q.x();
+	quat[2] = q.y();
+	quat[3] = q.z();
+
+	Eigen::Vector3d ans;
+	ans[0] = atan2(2.0 * (quat[3] * quat[2] + quat[0] * quat[1]), 1.0 - 2.0 * (quat[1] * quat[1] + quat[2] * quat[2]));
+	ans[1] = asin(2.0 * (quat[2] * quat[0] - quat[3] * quat[1]));
+	ans[2] = atan2(2.0 * (quat[3] * quat[0] + quat[1] * quat[2]), 1.0 - 2.0 * (quat[2] * quat[2] + quat[3] * quat[3]));
+	return ans;
 }
 
 void att_cb(const sensor_msgs::Imu::ConstPtr& msg)
 {
-	Eigen::Quaterniond plane.attitude_qv = Eigen::Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
-	 //保存四元数，未处理,不知道这个赋值函数能不能用，如果不能用直接一个个赋值
+	plane.attitude_qv = Eigen::Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
 
+	Eigen::Vector3d euler_fcu = quaternion_to_euler(plane.attitude_qv);
+
+	plane.attitude[0] = euler_fcu[0];
+	plane.attitude[1] = euler_fcu[1];
+	plane.attitude[2] = euler_fcu[2];
+	//角度顺序同RPY
 	plane.ang_r.roll_r = msg->angular_velocity.x;
 	plane.ang_r.pitch_r = msg->angular_velocity.x;
 	plane.ang_r.yaw_r = msg->angular_velocity.x;
 }
 
-/*void v_body_covInit(const std_msgs::String::ConstPtr& msg)
-{
-}
-void pos_covInit(const std_msgs::String::ConstPtr& msg)
-{
-	//赋值
-}
-void odomInit(const std_msgs::String::ConstPtr& msg)
-{
-
-}*/
 
 int main(int argc, char** argv)
 {
@@ -63,9 +70,6 @@ int main(int argc, char** argv)
 	sub.att = a.subscribe("/mavros/imu/data", 10, att_cb);
 	sub.v_local = a.subscribe("velocity_local", 10, v_localInit);
 	sub.v_body = a.subscribe("velocity_body", 10, v_bodyInit);
-	sub.pose_cov = a.subscribe("pose_cov", 10, pos_covInit);
-	sub.v_body_cov = a.subscribe("velocity_body_cov", 10, v_body_covInit);
-	sub.odom = a.subscribe("odom", 10, odomInit);
 	ros::spin();
 	return 0;
 }
