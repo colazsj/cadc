@@ -27,7 +27,7 @@
 #include <cmath>
 #include <sensor_msgs/Imu.h>
 #include <eigen3/Eigen/Eigen>
-
+#include <mavros_msgs/VFR_HUD.h>
 using namespace Eigen;
 using namespace std;
 
@@ -47,7 +47,7 @@ struct ang_rate
 	double roll_r, pitch_r, yaw_r;
 };
 
-struct plane {
+struct myplane {
 	position pos;
 	velocity v;
 	ang_rate ang_r;

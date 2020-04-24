@@ -1,15 +1,15 @@
 #include "def.h"
-bool plane::Drop(float x, float y, float z)
+bool myplane::Drop(float x, float y, float z)
 {
 	const float g = 9.8;
-	const float r = 3;
+	const float r = 3;//综合效率和准确率调整
 	const float delay_t = 0.5;
 	float tx = x - pos.x - v.x_sp * delay_t;
 	float ty = y - pos.y - v.y_sp * delay_t;
-	float tz = z - pos.z - v.z_sp * delay_t;//坐标变换，得到靶标相对飞机的位矢。
+	float tz = z - pos.z - v.z_sp * delay_t;//坐标变换，得到靶标相对飞机的位矢在ENU坐标系下。
 
 	pos.z += v.z_sp * delay_t;
-
+	attitude[2] +=ang_r.pitch_r*delay_t;
 	float h_t = sqrt(2 * pos.z / g);
 	float s_x = v.x_sp * h_t;
 	float s_y = v.y_sp * h_t;

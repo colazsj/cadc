@@ -16,8 +16,6 @@ void posInit(const geometry_msgs::PoseStamped::ConstPtr& msg)
 	plane.pos.z = msg->pose.position.z;
 }
 
-
-
 void v_localInit(const geometry_msgs::TwistStamped::ConstPtr& msg)
 {
 	plane.v.x_sp = msg->twist.linear.x;
@@ -60,16 +58,20 @@ void att_cb(const sensor_msgs::Imu::ConstPtr& msg)
 	plane.ang_r.pitch_r = msg->angular_velocity.x;
 	plane.ang_r.yaw_r = msg->angular_velocity.x;
 }
-
+void airsp_cb(const mavros_msgs::VFR_HUD::ConstPtr& msg)
+{
+	plane.air_speed= msg->airspeed;
+}
 
 int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "subscibe");
 	ros::NodeHandle a;
-	sub.pose = a.subscribe("pose", 10, posInit);
+	sub.pose = a.subscribe("pose", 10, posInit);//缓存参数改小了可能更准
 	sub.att = a.subscribe("/mavros/imu/data", 10, att_cb);
 	sub.v_local = a.subscribe("velocity_local", 10, v_localInit);
 	sub.v_body = a.subscribe("velocity_body", 10, v_bodyInit);
+	sub.airspeed = a.subscribe("/mavros/vfr_hud", 10, airsp_cb);
 	ros::spin();
 	return 0;
 }
