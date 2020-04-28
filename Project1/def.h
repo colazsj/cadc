@@ -51,7 +51,7 @@ struct myplane {
 	position pos;
 	velocity v;
 	ang_rate ang_r;
-	double air_speed; //不知道空速发布的话题是什么
+	double air_speed; //得到的似乎是机身坐标系下的飞机向前的空速，可以用来判断是否失速
 	double v_body;//机身坐标系下的话题得到的x是飞机向前的速度，但考虑到会有偏移，可能不太准，先用三维速度，如果后面发现面对标靶时机身坐标系更方便再改
 	Eigen::Quaterniond attitude_qv;  //四元数
 	double attitude[3];
