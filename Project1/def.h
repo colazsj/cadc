@@ -18,6 +18,7 @@
 #include <prometheus_msgs/DetectionInfo.h>
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/TwistStamped.h>
+#include <geometry_msgs/PoseStamped.h>
 #include <opencv2/imgproc/imgproc.hpp>  
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/ml.hpp>

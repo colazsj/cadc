@@ -17,8 +17,8 @@ bool myplane::Drop(float x, float y, float z)
 	//attitude[2] +=ang_r.pitch_r*delay_t;//抬头是负，pitch的加速度比较小，如果考虑上误差可能有点大，看试验结果调整
 	//attitude[3] += ang_r.yaw_r * delay_t;//正东为0，逆时针为正
 	float t1 = v.z_sp / g;//用飞机的竖直速度分量代水瓶竖直速度，可能有误差，之后再改进,上面是用俯仰角和偏航角的思路
-	float h = pos.z + v.z_sp * v.z_sp / (2 * g);
-	float t_h = sqrt(2 * h / g);
+	//float h = pos.z + v.z_sp * v.z_sp / (2 * g);/有向上分速度的时候
+	float t_h = sqrt(v.z_sp*v.z_sp+2 *g* pos.z )/ g;
 	float s_x = v.x_sp * (t_h+t1);
 	float s_y = v.y_sp * (t_h+t1);
 

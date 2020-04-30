@@ -10,7 +10,7 @@ bool Drop()//参数是目标位置
 
 
 int main()
-{
+{//实际运行实现要ros节点
     float x, y, z;
     plane.Drop(x,y,z);
     return 0;
