@@ -67,10 +67,10 @@ int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "subscibe");
 	ros::NodeHandle a;
-	sub.pose = a.subscribe("pose", 10, posInit);//缓存参数改小了可能更准
+	sub.pose = a.subscribe("/mavros/local_position/pose", 10, posInit);//缓存参数改小了可能更准
 	sub.att = a.subscribe("/mavros/imu/data", 10, att_cb);
-	sub.v_local = a.subscribe("velocity_local", 10, v_localInit);
-	sub.v_body = a.subscribe("velocity_body", 10, v_bodyInit);
+	sub.v_local = a.subscribe("/mavros/local_position/velocity_local", 10, v_localInit);
+	sub.v_body = a.subscribe("/mavros/local_position/velocity_body", 10, v_bodyInit);
 	sub.airspeed = a.subscribe("/mavros/vfr_hud", 10, airsp_cb);
 	ros::spin();
 	return 0;
