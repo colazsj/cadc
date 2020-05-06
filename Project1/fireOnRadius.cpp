@@ -26,7 +26,7 @@ bool myplane::Drop2(float x, float y, float z)
 	{
 		float a = s_x - tx;
 		float b = s_y - ty;
-		if (b / a *tan(plane.attitude[2])== (-1))
+		if (b / a *tan(2*pi*plane.attitude[2]/360)== (-1))//目测tan是达不到π/2,如果有bug再调
 			return true;
 		else return 0;
 	}
