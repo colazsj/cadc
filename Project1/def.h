@@ -57,6 +57,7 @@ struct myplane {
 	Eigen::Quaterniond attitude_qv;  //ËÄÔªÊı
 	double attitude[3];
 	bool Drop(float x,float y,float z);
+	bool Drop2(float x, float y, float z)
 }plane;
 
 

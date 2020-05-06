@@ -139,6 +139,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Fire.cpp" />
+    <ClCompile Include="fireOnRadius.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="subscribe.cpp" />
   </ItemGroup>
