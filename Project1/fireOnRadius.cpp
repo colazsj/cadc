@@ -5,6 +5,7 @@ bool myplane::Drop2(float x, float y, float z)
 	const float r = 3;//综合效率和准确率调整
 	const float delay_t = 0.5;
 	const float pi = 3.1415926;
+	const float d = 0.000001;//误差允许范围
 	//x,y,z是以机身为原点的ENU系
 	float tx = x - v.x_sp * delay_t;
 	float ty = y - v.y_sp * delay_t;
@@ -24,9 +25,10 @@ bool myplane::Drop2(float x, float y, float z)
 
 	if (d_val <= r)
 	{
+		attitude[2] += ang_r.yaw_r*delay_t;
 		float a = s_x - tx;
 		float b = s_y - ty;
-		if (b / a *tan(2*pi*plane.attitude[2]/360)== (-1))//目测tan是达不到π/2,如果有bug再调
+		if ((b  *tan(2*pi*attitude[2]/360)+a)<d )//目测tan是达不到π/2,如果有bug再调
 			return true;
 		else return 0;
 	}
